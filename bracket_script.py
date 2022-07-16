@@ -15,6 +15,7 @@ root_dir = './'
 
 errors_found = False
 for filename in glob.iglob(root_dir + '**/*.txt', recursive=True):
+    print('Checking file: ' + filename + '...')
     opening_bracket_count = 0
     closing_bracket_count = 0
 
