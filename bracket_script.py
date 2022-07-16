@@ -1,4 +1,5 @@
 import glob
+import sys
 
 
 def remove_comments(line, sep):
@@ -11,10 +12,12 @@ def remove_comments(line, sep):
 
 # root_dir needs a trailing slash (i.e. /root/dir/)
 root_dir = './'
+
+errors_found = False
 for filename in glob.iglob(root_dir + '**/*.txt', recursive=True):
     opening_bracket_count = 0
     closing_bracket_count = 0
-    
+
     try:
         with open(filename, 'r', encoding='utf-8') as file:
             for line in file:
@@ -25,4 +28,8 @@ for filename in glob.iglob(root_dir + '**/*.txt', recursive=True):
         print(filename, e)
 
     if opening_bracket_count != closing_bracket_count:
-        raise SyntaxError(filename, 'contains', opening_bracket_count, 'opening ({) vs', closing_bracket_count, 'closing (}) braces')
+        errors_found = True
+        print(filename, 'contains', opening_bracket_count, 'opening ({) vs', closing_bracket_count, 'closing (}) braces')
+
+if errors_found:
+    sys.exit(1)
