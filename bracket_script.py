@@ -1,5 +1,6 @@
 import glob
 import sys
+import chardet
 
 
 def remove_comments(line, sep):
@@ -9,6 +10,11 @@ def remove_comments(line, sep):
             line = line[:i]
     return line.strip()
 
+def get_file_encoding(file_path):
+    rawdata = open(file_path, 'rb').read()
+    result = chardet.detect(rawdata)
+    charenc = result['encoding']
+    return charenc
 
 # root_dir needs a trailing slash (i.e. /root/dir/)
 root_dir = './'
@@ -19,7 +25,8 @@ for filename in glob.iglob(root_dir + '**/*.txt', recursive=True):
     closing_bracket_count = 0
 
     try:
-        with open(filename, 'r', encoding='utf-8') as file:
+        detected_encoding = get_file_encoding(filename)
+        with open(filename, 'r', encoding=detected_encoding) as file:
             for line in file:
                 cleaned_line = remove_comments(line, '#')
                 opening_bracket_count += cleaned_line.count('{')
